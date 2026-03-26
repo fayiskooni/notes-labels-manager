@@ -3,7 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./db";
 
-import notesRoutes from "./routes/notes.route"
+import notesRoutes from "./routes/notes.route";
+import labelsRoutes from "./routes/labels.route";
 
 dotenv.config();
 
@@ -20,7 +21,8 @@ app.use(
 
 app.use(express.json());
 
-app.use("/",notesRoutes)
+app.use("/", notesRoutes);
+app.use("/", labelsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running");

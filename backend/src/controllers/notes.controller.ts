@@ -97,3 +97,42 @@ export async function deleteNote(req: Request, res: Response) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+export async function updateNote(req: Request, res: Response) {
+  const { id } = req.params;
+  const noteId = parseInt(id as string, 10);
+
+  const { title, content } = req.body;
+
+  if (isNaN(noteId)) {
+    return res.status(400).json({ message: "Invalid ID" });
+  }
+
+  try {
+    const result = await pool.query(
+      `
+      UPDATE notes
+      SET 
+        title = COALESCE($1, title),
+        content = COALESCE($2, content)
+      WHERE id = $3
+      RETURNING *
+      `,
+      [title, content, noteId]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        message: "Note not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error updating note:", error);
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
