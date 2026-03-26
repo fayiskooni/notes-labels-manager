@@ -5,6 +5,7 @@ import { connectDB } from "./db";
 
 import notesRoutes from "./routes/notes.route";
 import labelsRoutes from "./routes/labels.route";
+import attachLabelsRoutes from "./routes/attachLabels.route";
 
 dotenv.config();
 
@@ -23,6 +24,7 @@ app.use(express.json());
 
 app.use("/", notesRoutes);
 app.use("/", labelsRoutes);
+app.use("/", attachLabelsRoutes);
 
 app.get("/", (req, res) => {
   res.send("API is running");

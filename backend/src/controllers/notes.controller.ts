@@ -48,9 +48,25 @@ export async function getNote(req: Request, res: Response) {
   }
 
   try {
-    const result = await pool.query("SELECT * FROM notes WHERE id = $1", [
-      noteId,
-    ]);
+    const result = await pool.query(
+      `
+      SELECT 
+        n.id,
+        n.title,
+        n.content,
+        n.created_at,
+        COALESCE(
+          ARRAY_AGG(l.name) FILTER (WHERE l.id IS NOT NULL),
+          '{}'
+        ) AS labels
+      FROM notes n
+      LEFT JOIN note_labels nl ON n.id = nl.note_id
+      LEFT JOIN labels l ON nl.label_id = l.id
+      WHERE n.id = $1
+      GROUP BY n.id
+      `,
+      [noteId]
+    );
 
     if (result.rows.length === 0) {
       return res.status(404).json({
