@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import NoteForm from "@/components/notes/NoteForm";
 import NotesList from "@/components/notes/NotesList";
-import { getNotes, type Note } from "@/services/api";
+import { getNotes } from "@/services/api";
+import { type Note } from "@/types/note";
 
 export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
@@ -24,11 +25,13 @@ export default function Home() {
 
   return (
     <div className="max-w-5xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">
-        All Notes
-      </h1>
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">All Notes</h1>
 
-      <NoteForm onNoteCreated={(note) => setNotes((current) => [note, ...current])} />
+      <NoteForm
+        onNoteCreated={(note) =>
+          setNotes((current) => [{ ...note, labels: [] }, ...current])
+        }
+      />
       <NotesList notes={notes} />
     </div>
   );

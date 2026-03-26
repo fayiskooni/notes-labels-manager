@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 
-import { createNote, type Note } from "@/services/api";
+import { createNote} from "@/services/api";
+import { type Note } from "@/types/note";
+import LabelSelector from "@/components/labels/LabelSelector";
 
 type NoteFormProps = {
   onNoteCreated: (note: Note) => void;
@@ -11,6 +13,8 @@ type NoteFormProps = {
 export default function NoteForm({ onNoteCreated }: NoteFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
+
+  const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
 
   const handleSubmit = async () => {
     if (!title || !content) return;
@@ -39,6 +43,10 @@ export default function NoteForm({ onNoteCreated }: NoteFormProps) {
         onChange={(e) => setContent(e.target.value)}
         placeholder="Write your note..."
         className="w-full text-gray-600 outline-none resize-none mb-4"
+      />
+      <LabelSelector
+        selectedLabels={selectedLabels}
+        setSelectedLabels={setSelectedLabels}
       />
       <div className="flex justify-end">
         <button
