@@ -3,14 +3,24 @@ import cors from "cors";
 import dotenv from "dotenv";
 import { connectDB } from "./db";
 
+import notesRoutes from "./routes/notes.route"
+
 dotenv.config();
 
 const app = express();
 
 connectDB();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  }),
+);
+
 app.use(express.json());
+
+app.use("/",notesRoutes)
 
 app.get("/", (req, res) => {
   res.send("API is running");
