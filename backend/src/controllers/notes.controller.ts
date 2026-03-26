@@ -28,9 +28,22 @@ export async function createNote(req: Request, res: Response) {
 
 export async function getNotes(req: Request, res: Response) {
   try {
-    const result = await pool.query(
-      "SELECT * FROM notes ORDER BY created_at DESC",
-    );
+    const result = await pool.query(`
+  SELECT 
+    n.id,
+    n.title,
+    n.content,
+    n.created_at,
+    COALESCE(
+      json_agg(l.name) FILTER (WHERE l.id IS NOT NULL),
+      '[]'
+    ) AS labels
+  FROM notes n
+  LEFT JOIN note_labels nl ON n.id = nl.note_id
+  LEFT JOIN labels l ON nl.label_id = l.id
+  GROUP BY n.id
+  ORDER BY n.created_at DESC
+`);
 
     res.status(200).json({ success: true, data: result.rows });
   } catch (error) {
