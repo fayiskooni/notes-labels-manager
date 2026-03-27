@@ -1,24 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getLabels } from "@/services/api";
-import { Label } from "@/types/label";
+import { type Label } from "@/types/label";
 
 type Props = {
+  labels: Label[];
   selectedLabels: number[];
   setSelectedLabels: (ids: number[]) => void;
 };
 
 export default function LabelSelector({
+  labels,
   selectedLabels,
   setSelectedLabels,
 }: Props) {
-  const [labels, setLabels] = useState<Label[]>([]);
-
-  useEffect(() => {
-    getLabels().then((res) => setLabels(res.data));
-  }, []);
-
   const toggleLabel = (id: number) => {
     if (selectedLabels.includes(id)) {
       setSelectedLabels(selectedLabels.filter((l) => l !== id));
@@ -28,15 +22,15 @@ export default function LabelSelector({
   };
 
   return (
-    <div className="flex flex-wrap gap-2 mt-2">
+    <div className="flex gap-2 flex-wrap mb-4">
       {labels.map((label) => (
         <button
           key={label.id}
           onClick={() => toggleLabel(label.id)}
-          className={`px-3 py-1 rounded text-sm border ${
+          className={`px-2 py-1 rounded text-sm border ${
             selectedLabels.includes(label.id)
               ? "bg-blue-600 text-white"
-              : "bg-gray-100"
+              : "bg-gray-100 text-gray-700"
           }`}
         >
           {label.name}

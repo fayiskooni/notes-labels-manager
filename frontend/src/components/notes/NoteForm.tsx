@@ -4,39 +4,40 @@ import { useState } from "react";
 
 import { createNote, attachLabels } from "@/services/api";
 import LabelSelector from "@/components/labels/LabelSelector";
+import { type Label } from "@/types/label";
 
 type NoteFormProps = {
   onNoteCreated: () => Promise<void>;
+  labels: Label[];
 };
 
-
-export default function NoteForm({ onNoteCreated }: NoteFormProps) {
+export default function NoteForm({ onNoteCreated, labels }: NoteFormProps) {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
   const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
 
-const handleSubmit = async () => {
-  if (!title.trim() || !content.trim()) return;
+  const handleSubmit = async () => {
+    if (!title.trim() || !content.trim()) return;
 
-  const res = await createNote({
-    title: title.trim(),
-    content: content.trim(),
-  });
+    const res = await createNote({
+      title: title.trim(),
+      content: content.trim(),
+    });
 
-  const newNote = res.data;
+    const newNote = res.data;
 
-  if (selectedLabels.length > 0) {
-    await attachLabels(newNote.id, selectedLabels);
-  }
+    if (selectedLabels.length > 0) {
+      await attachLabels(newNote.id, selectedLabels);
+    }
 
-  // refresh full notes list
-  await onNoteCreated();
+    // refresh full notes list
+    await onNoteCreated();
 
-  setTitle("");
-  setContent("");
-  setSelectedLabels([]);
-};
+    setTitle("");
+    setContent("");
+    setSelectedLabels([]);
+  };
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border mb-8">
@@ -53,6 +54,7 @@ const handleSubmit = async () => {
         className="w-full text-gray-600 outline-none resize-none mb-4"
       />
       <LabelSelector
+        labels={labels}
         selectedLabels={selectedLabels}
         setSelectedLabels={setSelectedLabels}
       />
