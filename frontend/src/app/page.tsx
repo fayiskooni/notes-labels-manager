@@ -13,24 +13,32 @@ export default function Home() {
   const [notes, setNotes] = useState<Note[]>([]);
   const [labels, setLabels] = useState<Label[]>([]);
 
+  const fetchNotes = async () => {
+    const res = await getNotes();
+    setNotes(res.data);
+  };
+
+  const fetchLabels = async () => {
+    const res = await getLabels();
+    setLabels(res.data);
+  };
+
   useEffect(() => {
-    const fetch = async () => {
-      const res = await getNotes();
-      setNotes(res.data);
+    const loadData = async () => {
+      const notesRes = await getNotes();
+      setNotes(notesRes.data);
+
+      const labelsRes = await getLabels();
+      setLabels(labelsRes.data);
     };
 
-    fetch();
+    loadData();
   }, []);
 
   useEffect(() => {
-    const fetch = async () => {
-      const res = await getLabels();
-      setLabels(res.data);
+    const handleUpdate = () => {
+      fetchLabels();
     };
-
-    fetch();
-
-    const handleUpdate = () => fetch();
 
     window.addEventListener("labelsUpdated", handleUpdate);
 
@@ -39,21 +47,13 @@ export default function Home() {
     };
   }, []);
 
-  // Refresh notes (after create/delete/update)
-  const fetchNotes = async () => {
-    const res = await getNotes();
-    setNotes(res.data);
-  };
-
   return (
-    <div className="flex min-h-screen">
-      <main className="flex-1 max-w-5xl mx-auto p-6">
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">All Notes</h1>
+    <main className="max-w-5xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">All Notes</h1>
 
-        <NoteForm onNoteCreated={fetchNotes} labels={labels} />
+      <NoteForm onNoteCreated={fetchNotes} labels={labels} />
 
-        <NotesList notes={notes} refreshNotes={fetchNotes} />
-      </main>
-    </div>
+      <NotesList notes={notes} refreshNotes={fetchNotes} />
+    </main>
   );
 }

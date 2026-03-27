@@ -27,10 +27,10 @@ export default function LabelSelector({
         <button
           key={label.id}
           onClick={() => toggleLabel(label.id)}
-          className={`px-2 py-1 rounded text-sm border ${
+          className={`px-2 py-1 rounded text-sm border border-gray-200 ${
             selectedLabels.includes(label.id)
               ? "bg-blue-600 text-white"
-              : "bg-gray-100 text-gray-700"
+              : "bg-white text-blue-600 p-4 rounded text-xs cursor-pointer hover:bg-blue-200 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
           }`}
         >
           {label.name}
