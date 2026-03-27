@@ -32,7 +32,7 @@ export default function NotesList({
   };
 
   return (
-    <div className="grid grid-cols-3 gap-5">
+    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3">
       {notes.map((note) => (
         <div
           key={note.id}
@@ -40,7 +40,7 @@ export default function NotesList({
           className="bg-white p-4 rounded-2xl shadow-sm border border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-200 cursor-pointer"
         >
           <h2 className="font-semibold text-lg">{note.title}</h2>
-          <p className="text-gray-600 mt-2">{note.content}</p>
+          <p className="text-gray-600 mt-2 break-words">{note.content}</p>
 
           <div className="flex gap-2 mt-4 flex-wrap items-center">
             {note.labels?.map((label, index) => (

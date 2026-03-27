@@ -40,7 +40,7 @@ export default function NoteForm({ onNoteCreated, labels }: NoteFormProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-8">
+    <div className="bg-white p-4 sm:p-6 rounded-2xl shadow-sm border border-gray-200 mb-8">
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
@@ -62,7 +62,7 @@ export default function NoteForm({ onNoteCreated, labels }: NoteFormProps) {
         <button
           onClick={handleSubmit}
           disabled={!title.trim() || !content.trim()}
-          className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-5 py-2 rounded-lg"
+          className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-5 py-2 rounded-lg"
         >
           Create Note
         </button>

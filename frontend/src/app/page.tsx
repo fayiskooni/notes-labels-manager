@@ -72,18 +72,20 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">All Notes</h1>
+    <main className="max-w-5xl mx-auto p-2 sm:p-4">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
+        All Notes
+      </h1>
 
       <NoteForm onNoteCreated={fetchNotes} labels={labels} />
 
       <div className="relative mb-8">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3 sm:gap-4">
           <div className="flex-1 h-px bg-gray-300" />
 
           <button
             onClick={() => setShowFilters((current) => !current)}
-            className="px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition-all duration-200"
+            className="shrink-0 px-4 py-2 rounded-lg border border-gray-200 bg-white text-sm font-medium text-gray-600 hover:text-blue-600 hover:border-blue-200 hover:bg-blue-50 transition-all duration-200"
           >
             Filter
             {selectedLabels.length > 0 ? ` (${selectedLabels.length})` : ""}

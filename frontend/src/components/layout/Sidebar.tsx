@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation";
 export default function Sidebar() {
   const [newLabel, setNewLabel] = useState("");
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const pathname = usePathname();
 
   const handleCreate = async () => {
@@ -15,30 +16,34 @@ export default function Sidebar() {
 
     try {
       setLoading(true);
+      setErrorMessage("");
 
-      await createLabel(newLabel.trim());
+      const res = await createLabel(newLabel.trim());
+
+      if (!res.success) {
+        setErrorMessage(res.message || "Failed to create label");
+        return;
+      }
 
       window.dispatchEvent(new Event("labelsUpdated"));
 
       setNewLabel("");
     } catch (err: unknown) {
-      if (err instanceof Error) {
-        if (err.message === "Label already exists") {
-          alert("Label already exists");
-        } else {
-          alert("Failed to create label");
-        }
-      }
+      setErrorMessage(
+        err instanceof Error ? err.message : "Failed to create label",
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="w-64 bg-white border-r p-5">
-      <h1 className="text-xl font-bold mb-8">Notes App</h1>
+    <div className="w-full bg-white border-b p-4 sm:p-5 md:w-64 md:border-b-0 md:border-r">
+      <h1 className="text-xl font-bold mb-4 text-center md:mb-8 md:text-left">
+        Notes App
+      </h1>
 
-      <div className="space-y-3 mb-8">
+      <div className="grid grid-cols-2 gap-3 mb-6 md:grid-cols-1 md:mb-8">
         <Link
           href="/"
           className={`block w-full rounded-lg py-2 text-center font-medium transition ${
@@ -62,13 +67,16 @@ export default function Sidebar() {
         </Link>
       </div>
 
-      <div className="mt-6 border-t pt-4">
+      <div className="mt-4 border-t pt-4">
         <h3 className="text-sm font-semibold mb-2">Create Label</h3>
 
         <input
           type="text"
           value={newLabel}
-          onChange={(e) => setNewLabel(e.target.value)}
+          onChange={(e) => {
+            setNewLabel(e.target.value);
+            setErrorMessage("");
+          }}
           placeholder="Enter label name"
           className="w-full text-sm font-medium px-2 py-1 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
         />
@@ -80,6 +88,10 @@ export default function Sidebar() {
         >
           {loading ? "Adding..." : "+ Add Label"}
         </button>
+
+        {errorMessage ? (
+          <p className="mt-2 text-sm text-red-500">{errorMessage}</p>
+        ) : null}
       </div>
     </div>
   );

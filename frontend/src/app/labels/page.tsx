@@ -59,11 +59,13 @@ export default function LabelsPage() {
   };
 
   return (
-    <main className="max-w-5xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Manage Labels</h1>
+    <main className="max-w-5xl mx-auto p-2 sm:p-4">
+      <h1 className="text-2xl sm:text-3xl font-bold mb-6 text-gray-800">
+        Manage Labels
+      </h1>
 
       <div className="space-y-3">
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {labels.map((label) => (
             <div
               key={label.id}
@@ -81,7 +83,7 @@ export default function LabelsPage() {
                 </p>
               )}
 
-              <div className="flex justify-end items-center gap-2 mt-4">
+              <div className="flex flex-wrap justify-end items-center gap-2 mt-4">
                 {editingId === label.id ? (
                   <button
                     onClick={() => handleUpdate(label.id)}

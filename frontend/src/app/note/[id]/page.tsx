@@ -54,14 +54,14 @@ export default function SingleNotePage() {
 
   if (!note) {
     return (
-      <main className="max-w-5xl mx-auto p-6">
+      <main className="max-w-5xl mx-auto p-2 sm:p-4">
         <p className="text-sm text-gray-500">Loading note...</p>
       </main>
     );
   }
 
   return (
-    <main className="max-w-5xl mx-auto p-6">
+    <main className="max-w-5xl mx-auto p-2 sm:p-4">
       <Link
         href="/"
         className="inline-flex items-center text-sm text-gray-500 hover:text-blue-600 mb-6"
@@ -69,24 +69,26 @@ export default function SingleNotePage() {
         ← Back to notes
       </Link>
 
-      <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+      <div className="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 shadow-sm">
         {isEditing ? (
           <>
             <input
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full text-3xl font-bold outline-none"
+              className="w-full text-2xl sm:text-3xl font-bold outline-none"
             />
             <textarea
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-full text-gray-600 outline-none resize-none mt-4"
+              className="w-full min-h-40 text-gray-600 outline-none resize-none mt-4"
             />
           </>
         ) : (
           <>
-            <h1 className="text-3xl font-bold text-gray-800">{note.title}</h1>
-            <p className="text-gray-600 mt-4 whitespace-pre-wrap">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-800 break-words">
+              {note.title}
+            </h1>
+            <p className="text-gray-600 mt-4 whitespace-pre-wrap break-words">
               {note.content}
             </p>
           </>
@@ -103,19 +105,19 @@ export default function SingleNotePage() {
           ))}
         </div>
 
-        <div className="flex justify-end gap-3 mt-8">
+        <div className="flex flex-col-reverse gap-3 mt-8 sm:flex-row sm:justify-end">
           {isEditing ? (
             <button
               onClick={handleUpdate}
               disabled={!title.trim() || !content.trim()}
-              className="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-5 py-2 rounded-lg hover:-translate-y-1 transition-all duration-200"
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-5 py-2 rounded-lg hover:-translate-y-1 transition-all duration-200"
             >
               Save
             </button>
           ) : (
             <button
               onClick={() => setIsEditing(true)}
-              className="bg-gray-900 hover:bg-gray-700 text-white px-5 py-2 rounded-lg hover:-translate-y-1 transition-all duration-200"
+              className="w-full sm:w-auto bg-gray-900 hover:bg-gray-700 text-white px-5 py-2 rounded-lg hover:-translate-y-1 transition-all duration-200"
             >
               Edit
             </button>
@@ -123,7 +125,7 @@ export default function SingleNotePage() {
 
           <button
             onClick={handleDelete}
-            className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg hover:-translate-y-1 transition-all duration-200"
+            className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg hover:-translate-y-1 transition-all duration-200"
           >
             Delete
           </button>
