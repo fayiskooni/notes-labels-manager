@@ -48,3 +48,15 @@ export const getNote = async (id: number) => {
   const res = await fetch(`${BASE_URL}/note/${id}`);
   return res.json();
 };
+
+export const removeLabel = async (noteId: number, labelId: number) => {
+  const res = await fetch(`${BASE_URL}/note/${noteId}/label`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ labelId }),
+  });
+
+  return res.json();
+};

@@ -33,7 +33,7 @@ export default function Home() {
       <h1 className="text-3xl font-bold mb-6 text-gray-800">All Notes</h1>
 
       <NoteForm onNoteCreated={fetchNotes} />
-      <NotesList notes={notes} />
+      <NotesList notes={notes} refreshNotes={fetchNotes} />
     </div>
   );
 }

@@ -35,7 +35,12 @@ export async function getNotes(req: Request, res: Response) {
     n.content,
     n.created_at,
     COALESCE(
-      json_agg(l.name) FILTER (WHERE l.id IS NOT NULL),
+      json_agg(
+        json_build_object(
+          'id', l.id,
+          'name', l.name
+        )
+      ) FILTER (WHERE l.id IS NOT NULL),
       '[]'
     ) AS labels
   FROM notes n
@@ -69,7 +74,12 @@ export async function getNote(req: Request, res: Response) {
     n.content,
     n.created_at,
     COALESCE(
-      json_agg(l.name) FILTER (WHERE l.id IS NOT NULL),
+      json_agg(
+        json_build_object(
+          'id', l.id,
+          'name', l.name
+        )
+      ) FILTER (WHERE l.id IS NOT NULL),
       '[]'
     ) AS labels
   FROM notes n
