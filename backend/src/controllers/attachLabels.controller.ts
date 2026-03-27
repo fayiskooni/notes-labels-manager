@@ -146,14 +146,21 @@ export async function getNotesByLabel(req: Request, res: Response) {
         n.content,
         n.created_at,
         COALESCE(
-          ARRAY_AGG(DISTINCT l.name) FILTER (WHERE l.id IS NOT NULL),
-          '{}'
+          json_agg(
+            DISTINCT jsonb_build_object(
+              'id', all_labels.id,
+              'name', all_labels.name
+            )
+          ) FILTER (WHERE all_labels.id IS NOT NULL),
+          '[]'
         ) AS labels
       FROM notes n
-      JOIN note_labels nl ON n.id = nl.note_id
-      JOIN labels l ON nl.label_id = l.id
-      WHERE l.id = ANY($1)
+      JOIN note_labels matched_labels ON n.id = matched_labels.note_id
+      LEFT JOIN note_labels all_note_labels ON n.id = all_note_labels.note_id
+      LEFT JOIN labels all_labels ON all_note_labels.label_id = all_labels.id
+      WHERE matched_labels.label_id = ANY($1)
       GROUP BY n.id
+      HAVING COUNT(DISTINCT matched_labels.label_id) = array_length($1::int[], 1)
       ORDER BY n.created_at DESC
       `,
       [idArray],

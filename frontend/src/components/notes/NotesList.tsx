@@ -43,12 +43,14 @@ export default function NotesList({
           <p className="text-gray-600 mt-2">{note.content}</p>
 
           <div className="flex gap-2 mt-4 flex-wrap items-center">
-            {note.labels?.map((label) => (
+            {note.labels?.map((label, index) => (
               <span
-                key={label.id}
+                key={`${note.id}-${label.id ?? label.name ?? "label"}-${index}`}
                 onClick={(e) => {
                   e.stopPropagation();
-                  handleRemoveLabel(note.id, label.id);
+                  if (label.id !== undefined) {
+                    handleRemoveLabel(note.id, label.id);
+                  }
                 }}
                 className="bg-blue-100 text-blue-600 px-2 py-1 rounded text-xs cursor-pointer hover:bg-blue-300 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all duration-200"
               >
