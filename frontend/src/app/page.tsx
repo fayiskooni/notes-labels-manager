@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import NoteForm from "@/components/notes/NoteForm";
 import NotesList from "@/components/notes/NotesList";
+import LoadingState from "@/components/ui/LoadingState";
 
 import { getLabels, getNotes, getNotesByLabel } from "@/services/api";
 
@@ -14,50 +15,45 @@ export default function Home() {
   const [labels, setLabels] = useState<Label[]>([]);
   const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [isNotesLoading, setIsNotesLoading] = useState(true);
+  const [isLabelsLoading, setIsLabelsLoading] = useState(true);
 
-  const fetchNotes = async () => {
-    const res =
-      selectedLabels.length > 0
-        ? await getNotesByLabel(selectedLabels)
-        : await getNotes();
-
-    setNotes(res.data);
-  };
-
-  const fetchLabels = async () => {
-    const res = await getLabels();
-    setLabels(res.data);
-  };
-
-  useEffect(() => {
-    const loadData = async () => {
-      const labelsRes = await getLabels();
-      setLabels(labelsRes.data);
-    };
-
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    let isActive = true;
-
-    const loadNotes = async () => {
+  const fetchNotes = useCallback(async () => {
+    setIsNotesLoading(true);
+    try {
       const res =
         selectedLabels.length > 0
           ? await getNotesByLabel(selectedLabels)
           : await getNotes();
-
-      if (isActive) {
-        setNotes(res.data);
-      }
-    };
-
-    loadNotes();
-
-    return () => {
-      isActive = false;
-    };
+      setNotes(res.data ?? []);
+    } catch (error) {
+      console.error("Failed to fetch notes:", error);
+      setNotes([]);
+    } finally {
+      setIsNotesLoading(false);
+    }
   }, [selectedLabels]);
+
+  const fetchLabels = useCallback(async () => {
+    setIsLabelsLoading(true);
+    try {
+      const res = await getLabels();
+      setLabels(res.data ?? []);
+    } catch (error) {
+      console.error("Failed to fetch labels:", error);
+      setLabels([]);
+    } finally {
+      setIsLabelsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchLabels();
+  }, [fetchLabels]);
+
+  useEffect(() => {
+    fetchNotes();
+  }, [fetchNotes]);
 
   useEffect(() => {
     const handleUpdate = () => {
@@ -69,7 +65,7 @@ export default function Home() {
     return () => {
       window.removeEventListener("labelsUpdated", handleUpdate);
     };
-  }, []);
+  }, [fetchLabels]);
 
   return (
     <main className="max-w-5xl mx-auto p-2 sm:p-4">
@@ -94,29 +90,35 @@ export default function Home() {
 
         {showFilters ? (
           <div className="mt-4 bg-white border border-gray-200 rounded-2xl p-4 shadow-sm">
-            <div className="flex gap-2 flex-wrap">
-              {labels.map((label) => (
-                <button
-                  key={label.id}
-                  onClick={() =>
-                    setSelectedLabels((current) =>
-                      current.includes(label.id)
-                        ? current.filter((id) => id !== label.id)
-                        : [...current, label.id],
-                    )
-                  }
-                  className={`px-3 py-2 rounded-full text-sm border transition-all duration-200 ${
-                    selectedLabels.includes(label.id)
-                      ? "bg-blue-600 text-white border-blue-600"
-                      : "bg-white text-gray-600 border-gray-200 hover:bg-blue-50 hover:text-blue-600"
-                  }`}
-                >
-                  {label.name}
-                </button>
-              ))}
-            </div>
+            {isLabelsLoading ? (
+              <LoadingState message="Loading labels..." />
+            ) : labels.length > 0 ? (
+              <div className="flex gap-2 flex-wrap">
+                {labels.map((label) => (
+                  <button
+                    key={label.id}
+                    onClick={() =>
+                      setSelectedLabels((current) =>
+                        current.includes(label.id)
+                          ? current.filter((id) => id !== label.id)
+                          : [...current, label.id],
+                      )
+                    }
+                    className={`px-3 py-2 rounded-full text-sm border transition-all duration-200 ${
+                      selectedLabels.includes(label.id)
+                        ? "bg-blue-600 text-white border-blue-600"
+                        : "bg-white text-gray-600 border-gray-200 hover:bg-blue-50 hover:text-blue-600"
+                    }`}
+                  >
+                    {label.name}
+                  </button>
+                ))}
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">No labels available</p>
+            )}
 
-            {selectedLabels.length > 0 ? (
+            {!isLabelsLoading && selectedLabels.length > 0 ? (
               <button
                 onClick={() => setSelectedLabels([])}
                 className="mt-4 text-sm text-gray-500 hover:text-blue-600"
@@ -128,7 +130,15 @@ export default function Home() {
         ) : null}
       </div>
 
-      <NotesList notes={notes} labels={labels} refreshNotes={fetchNotes} />
+      {isNotesLoading ? (
+        <LoadingState message="Loading notes..." />
+      ) : notes.length > 0 ? (
+        <NotesList notes={notes} labels={labels} refreshNotes={fetchNotes} />
+      ) : (
+        <div className="rounded-2xl border border-dashed border-gray-300 bg-white/80 p-8 text-center text-sm text-gray-500">
+          No notes available
+        </div>
+      )}
     </main>
   );
 }
