@@ -2,13 +2,13 @@
 
 import { useState } from "react";
 
-import { createNote} from "@/services/api";
-import { type Note } from "@/types/note";
+import { createNote, attachLabels } from "@/services/api";
 import LabelSelector from "@/components/labels/LabelSelector";
 
 type NoteFormProps = {
-  onNoteCreated: (note: Note) => void;
+  onNoteCreated: () => Promise<void>;
 };
+
 
 export default function NoteForm({ onNoteCreated }: NoteFormProps) {
   const [title, setTitle] = useState("");
@@ -16,19 +16,27 @@ export default function NoteForm({ onNoteCreated }: NoteFormProps) {
 
   const [selectedLabels, setSelectedLabels] = useState<number[]>([]);
 
-  const handleSubmit = async () => {
-    if (!title || !content) return;
+const handleSubmit = async () => {
+  if (!title.trim() || !content.trim()) return;
 
-    const response = await createNote({ title, content });
+  const res = await createNote({
+    title: title.trim(),
+    content: content.trim(),
+  });
 
-    onNoteCreated({
-      ...response.data,
-      labels: response.data.labels ?? [],
-    });
+  const newNote = res.data;
 
-    setTitle("");
-    setContent("");
-  };
+  if (selectedLabels.length > 0) {
+    await attachLabels(newNote.id, selectedLabels);
+  }
+
+  // refresh full notes list
+  await onNoteCreated();
+
+  setTitle("");
+  setContent("");
+  setSelectedLabels([]);
+};
 
   return (
     <div className="bg-white p-6 rounded-xl shadow-sm border mb-8">

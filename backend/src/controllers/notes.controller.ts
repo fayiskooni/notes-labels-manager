@@ -63,22 +63,22 @@ export async function getNote(req: Request, res: Response) {
   try {
     const result = await pool.query(
       `
-      SELECT 
-        n.id,
-        n.title,
-        n.content,
-        n.created_at,
-        COALESCE(
-          ARRAY_AGG(l.name) FILTER (WHERE l.id IS NOT NULL),
-          '{}'
-        ) AS labels
-      FROM notes n
-      LEFT JOIN note_labels nl ON n.id = nl.note_id
-      LEFT JOIN labels l ON nl.label_id = l.id
-      WHERE n.id = $1
-      GROUP BY n.id
-      `,
-      [noteId]
+  SELECT 
+    n.id,
+    n.title,
+    n.content,
+    n.created_at,
+    COALESCE(
+      json_agg(l.name) FILTER (WHERE l.id IS NOT NULL),
+      '[]'
+    ) AS labels
+  FROM notes n
+  LEFT JOIN note_labels nl ON n.id = nl.note_id
+  LEFT JOIN labels l ON nl.label_id = l.id
+  WHERE n.id = $1
+  GROUP BY n.id
+  `,
+      [noteId],
     );
 
     if (result.rows.length === 0) {
@@ -147,7 +147,7 @@ export async function updateNote(req: Request, res: Response) {
       WHERE id = $3
       RETURNING *
       `,
-      [title, content, noteId]
+      [title, content, noteId],
     );
 
     if (result.rows.length === 0) {

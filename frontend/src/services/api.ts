@@ -28,3 +28,23 @@ export const getLabels = async (): Promise<ApiResponse<Label[]>> => {
   const res = await fetch(`${BASE_URL}/labels`);
   return res.json();
 };
+
+export const attachLabels = async (
+  noteId: number,
+  labelIds: number[]
+) => {
+  const res = await fetch(`${BASE_URL}/note/${noteId}/label`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ labelIds }),
+  });
+
+  return res.json();
+};
+
+export const getNote = async (id: number) => {
+  const res = await fetch(`${BASE_URL}/note/${id}`);
+  return res.json();
+};
