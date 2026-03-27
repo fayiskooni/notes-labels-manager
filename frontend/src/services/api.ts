@@ -46,6 +46,11 @@ export const getNote = async (id: number) => {
   return res.json();
 };
 
+export const getSingleNote = async (id: number): Promise<ApiResponse<Note>> => {
+  const res = await fetch(`${BASE_URL}/note/${id}`);
+  return res.json();
+};
+
 export const removeLabel = async (noteId: number, labelId: number) => {
   const res = await fetch(`${BASE_URL}/note/${noteId}/label`, {
     method: "DELETE",
@@ -75,15 +80,22 @@ export const updateLabel = (id: number, name: string) =>
 export const deleteLabel = (id: number) =>
   fetch(`${BASE_URL}/label/${id}`, { method: "DELETE" });
 
-export const updateNote = (id: number, data: UpdateNotePayload) =>
-  fetch(`${BASE_URL}/note/${id}`, {
+export const updateNote = async (
+  id: number,
+  data: UpdateNotePayload,
+): Promise<ApiResponse<Note>> => {
+  const res = await fetch(`${BASE_URL}/note/${id}`, {
     method: "PATCH",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(data),
   });
+  return res.json();
+};
 
-export const deleteNote = (id: number) =>
-  fetch(`${BASE_URL}/note/${id}`, { method: "DELETE" });
+export const deleteNote = async (id: number) => {
+  const res = await fetch(`${BASE_URL}/note/${id}`, { method: "DELETE" });
+  return res.json();
+};
 
 export const getNotesByLabel = (labelIds: number[]) =>
   fetch(`${BASE_URL}/notes/filter?labelIds=${labelIds.join(",")}`).then((res) =>

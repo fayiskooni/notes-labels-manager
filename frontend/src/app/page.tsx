@@ -53,7 +53,7 @@ export default function Home() {
 
       <NoteForm onNoteCreated={fetchNotes} labels={labels} />
 
-      <NotesList notes={notes} refreshNotes={fetchNotes} />
+      <NotesList notes={notes} labels={labels} refreshNotes={fetchNotes} />
     </main>
   );
 }

@@ -40,7 +40,7 @@ export default function NoteForm({ onNoteCreated, labels }: NoteFormProps) {
   };
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow-sm border mb-8">
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-200 mb-8">
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}

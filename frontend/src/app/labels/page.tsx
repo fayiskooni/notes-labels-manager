@@ -85,14 +85,14 @@ export default function LabelsPage() {
                 {editingId === label.id ? (
                   <button
                     onClick={() => handleUpdate(label.id)}
-                    className="text-xs font-medium text-green-600 hover:text-green-700"
+                    className="text-xs font-medium bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white rounded-lg px-3 py-2 hover:-translate-y-1 transition-all duration-200"
                   >
                     Save
                   </button>
                 ) : (
                   <button
                     onClick={() => handleEdit(label)}
-                    className="text-xs text-gray-500 hover:text-blue-600 hover:-translate-y-1 transition-all duration-200"
+                    className="text-xs hover:-translate-y-1 transition-all duration-200 bg-gray-900 hover:bg-gray-700 text-white px-3 py-2 rounded-lg"
                   >
                     Edit
                   </button>
@@ -100,7 +100,7 @@ export default function LabelsPage() {
 
                 <button
                   onClick={() => handleDelete(label.id)}
-                  className="text-xs text-red-500 hover:text-red-300 hover:-translate-y-1 transition-all duration-200"
+                  className="text-xs bg-red-500 hover:bg-red-600 text-white px-3 py-2 rounded-lg hover:-translate-y-1 transition-all duration-200"
                 >
                   Delete
                 </button>
